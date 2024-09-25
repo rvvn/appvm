@@ -1,13 +1,12 @@
-import sqlite3
+from flask import Flask, request, escape
 
-def get_user_info(user_id):
-    connection = sqlite3.connect("users.db")
-    cursor = connection.cursor()
+app = Flask(__name__)
 
-    # Vulnerable to SQL injection
-    query = f"SELECT * FROM users WHERE id = {user_id};"
-    cursor.execute(query)
-    user_info = cursor.fetchone()
+@app.route('/greet', methods=['GET'])
+def greet():
+    # Vulnerable to XSS
+    name = request.args.get('name', '')
+    return f"<h1>Hello, {name}!</h1>"
 
-    connection.close()
-    return user_info
+if __name__ == '__main__':
+    app.run()
