@@ -1,23 +1,17 @@
-import requests
-import os
-import sys
+import mysql.connector
 
-token = 'aafdfdfef444f433'
+connection = mysql.connector.connect(
+ host="localhost", # replace this with your actual host name
+ user="username",
+ password="password",
+ database="database_name"
+)
+cursor = connection.cursor()
 
-print("test")
+# SQL injection example 1: ' or '1'='1' - single quote (')
+query = "SELECT * FROM users WHERE username=(' or '1'='1'") # user input is not sanitized
+print(cursor.execute(query))
 
-#test medium vuln
-response = requests.get("http://www.google.com", insecurewarning= false)
-
-#test high vuln
-user_input = sys.argv[1]  # Get input from command-line argument
-os.system("ls " + user_input)
-
-#test critical vuln
-url = input("Enter the URL: ")
-response = requests.get(url, verify=False)  # Disables SSL verification
-print(response.content)
-
-#test duplicate vuln - same id?
-user_input = sys.argv[1]  # Get input from command-line argument
-os.system("ls " + user_input)
+# SQL injection example 2: '' OR 1=0
+query = "SELECT * FROM users WHERE username=('') OR 1=0" # no quote marks around single quotes (')
+print(cursor.execute(query))
