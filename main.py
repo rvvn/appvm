@@ -2,6 +2,8 @@ import requests
 import os
 import sys
 
+token = 'aafdfdfef444f433'
+
 print("test")
 
 #test medium vuln
