@@ -1,17 +1,13 @@
-import mysql.connector
+import sqlite3
 
-connection = mysql.connector.connect(
- host="localhost", # replace this with your actual host name
- user="username",
- password="password",
- database="database_name"
-)
-cursor = connection.cursor()
+def get_user_info(user_id):
+    connection = sqlite3.connect("users.db")
+    cursor = connection.cursor()
 
-# SQL injection example 1: ' or '1'='1' - single quote (')
-query = "SELECT * FROM users WHERE username=(' or '1'='1'") # user input is not sanitized
-print(cursor.execute(query))
+    # Vulnerable to SQL injection
+    query = f"SELECT * FROM users WHERE id = {user_id};"
+    cursor.execute(query)
+    user_info = cursor.fetchone()
 
-# SQL injection example 2: '' OR 1=0
-query = "SELECT * FROM users WHERE username=('') OR 1=0" # no quote marks around single quotes (')
-print(cursor.execute(query))
+    connection.close()
+    return user_info
